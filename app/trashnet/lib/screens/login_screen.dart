@@ -38,11 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
         // Save user email to shared preferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("user_email", data['user']['email']);
-        // Example during login
-        // prefs.setString(
-        //   'userId',
-        //   data['user']['_id'],
-        // ); // or similar depending on your response
+        await prefs.setString('user_name',data['user']['name'],); 
 
 
         ScaffoldMessenger.of(context).showSnackBar(

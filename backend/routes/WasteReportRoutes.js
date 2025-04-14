@@ -1,38 +1,52 @@
+
 const express = require("express");
-const multer = require("multer");
-const WasteReport = require("../models/WasteReport");
 const router = express.Router();
+const multer = require("multer");
+const  Request  = require('../models/Request');
+const { getUserIdByEmail } = require('../utils/utils');
+const { requestImageStorage } = require('../config/cloudinaryConfig');
 
-// Multer config
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "uploads/waste_reports/"),
-    filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
-const upload = multer({ storage });
+const upload = multer({ storage: requestImageStorage });
 
-// POST route - submit report
-router.post("/submit", upload.single("image"), async (req, res) => {
+router.post('/submit', upload.single("image"), async (req, res) => {
     try {
-        const { wasteType, location, urgency, notes } = req.body;
-        const latitude = parseFloat(req.body.latitude);   // ✅ Parse safely
-        const longitude = parseFloat(req.body.longitude); 
+        const { email, request_type, address, message } = req.body;
         const imageUrl = req.file ? req.file.path : "";
 
-        const newReport = new WasteReport({
-            wasteType,
-            location,
-            urgency,
-            notes,
-            latitude,
-            longitude,
-            imageUrl: req.file ? req.file.path : null,
+        const userId = await getUserIdByEmail(email);
+        if (!userId) {
+            return res.status(400).json({ message: 'User not found' });
+        }
+
+        const location = req.body.location;
+        const longitude = parseFloat(location.coordinates[0]);
+        const latitude = parseFloat(location.coordinates[1]);
+
+        if (isNaN(longitude) || isNaN(latitude)) {
+            return res.status(400).json({ message: 'Invalid location coordinates' });
+        }
+
+        const locationObj = {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+        };
+
+        const newRequest = new Request({
+            userId,
+            request_type,
+            address,
+            message,
+            imageUrl,
+            email,
+            location: locationObj,
         });
 
-        await newReport.save();
-        res.status(201).json({ message: "Waste report submitted successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Something went wrong" });
+        await newRequest.save();
+
+        res.status(201).json({ message: 'Request submitted successfully', request: newRequest });
+    } catch (err) {
+        console.error('Error creating request:', err);
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 

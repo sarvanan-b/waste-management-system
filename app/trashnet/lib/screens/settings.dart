@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -11,6 +10,8 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor, // Adapt to theme
+      
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
@@ -61,18 +62,24 @@ class SettingsScreen extends StatelessWidget {
     Widget? trailing,
     void Function()? onTap,
   }) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.blueAccent),
-      title: Text(
-        title,
-        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
+    return Card(
+      elevation: 4.0,
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      color: Theme.of(context).cardColor, // Adapt to theme
+      child: ListTile(
+        leading: Icon(icon, color: Theme.of(context).iconTheme.color),
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade600),
+        ),
+        trailing: trailing,
+        onTap: onTap,
       ),
-      subtitle: Text(
-        subtitle,
-        style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey.shade600),
-      ),
-      trailing: trailing,
-      onTap: onTap,
     );
   }
 
@@ -173,7 +180,6 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -214,7 +220,6 @@ class SettingsScreen extends StatelessWidget {
           ),
     );
   }
-
 
   void _showAboutDialog(BuildContext context) {
     showDialog(
@@ -286,7 +291,6 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 }
-
 
 void logout(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();
