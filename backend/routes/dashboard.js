@@ -67,4 +67,45 @@ router.get("/reports", async (req, res) => {
     }
 });
 
+
+router.delete('/reports/:id', async (req, res) => {
+    const { id } = req.params;
+    // console.log(id);
+    try {
+        await Request.findByIdAndDelete(id);
+        res.status(200).send({ message: "Deleted successfully" });
+    } catch (err) {
+        res.status(500).send({ error: "Failed to delete report" });
+    }
+});
+
+router.put('/edit_reports/:id', async (req, res) => {
+    try {
+        const reportId = req.params.id;
+        const { request_type, message, address } = req.body;
+
+        // Validate request body
+        if (!request_type || !message || !address) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        // Find the report by ID and update
+        const updatedReport = await Request.findByIdAndUpdate(
+            reportId,
+            { request_type, message, address },
+            { new: true }
+        );
+
+        if (!updatedReport) {
+            return res.status(404).json({ message: 'Report not found' });
+        }
+
+        // Return the updated report
+        res.status(200).json(updatedReport);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 module.exports = router;
