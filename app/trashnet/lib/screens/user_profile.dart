@@ -24,6 +24,8 @@ class User {
 }
 
 class UserProfileScreen extends StatefulWidget {
+  const UserProfileScreen({super.key});
+
   @override
   _UserProfileScreenState createState() => _UserProfileScreenState();
 }
@@ -75,6 +77,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           phoneController.text = currentUser!.phone;
           addressController.text = currentUser!.address;
         });
+
+        // Save profile image to shared preferences
+        await prefs.setString('user_profile_image', currentUser!.profileImage);
       } else {
         print("Failed to load user data: ${response.statusCode}");
       }
@@ -110,6 +115,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     var responseBody = await response.stream.bytesToString();
 
     if (response.statusCode == 200) {
+      var jsonResponse = jsonDecode(responseBody);
+      var newProfileImage = jsonResponse['profileImage'];
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_profile_image', newProfileImage);
+
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Profile updated successfully")));
@@ -194,10 +205,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 backgroundImage:
                                     _image != null
                                         ? FileImage(_image!)
-                                        : NetworkImage(
+                                        : currentUser!.profileImage.isNotEmpty
+                                        ? NetworkImage(
                                               currentUser!.profileImage,
                                             )
-                                            as ImageProvider,
+                                            as ImageProvider
+                                        : AssetImage(
+                                          "assets/images/profile.jpg",
+                                        ),
                                 child:
                                     _image == null &&
                                             currentUser!.profileImage.isEmpty
@@ -267,13 +282,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           );
 
                           setState(() {
-                            currentUser = User(
-                              name: nameController.text,
-                              email: emailController.text,
-                              phone: phoneController.text,
-                              address: addressController.text,
-                              profileImage: currentUser!.profileImage,
-                            );
                             isEditing = false;
                           });
                         } else {

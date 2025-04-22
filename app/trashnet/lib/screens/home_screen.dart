@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dashboard.dart';
 import 'waste_report.dart';
 import 'user_profile.dart';
@@ -15,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  String? _profileImageUrl;
 
   final List<Widget> _pages = [
     DashboardScreen(),
@@ -24,10 +27,29 @@ class _HomePageState extends State<HomePage> {
     SettingsScreen(),
   ];
 
-  void _onItemTapped(int index) {
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _profileImageUrl = prefs.getString('user_profile_image');
+    });
+  }
+
+  void _onItemTapped(int index) async {
     setState(() {
       _selectedIndex = index;
     });
+
+    // Refresh profile photo when returning from profile screen
+    if (index == 3) {
+      // Assuming UserProfileScreen is at index 3
+      await _loadProfileImage();
+    }
   }
 
   @override
@@ -45,9 +67,10 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           CircleAvatar(
-            backgroundImage: AssetImage(
-              "assets/images/profile.jpg",
-            ), // Replace with your image
+            backgroundImage:
+                _profileImageUrl != null && _profileImageUrl!.isNotEmpty
+                    ? NetworkImage(_profileImageUrl!)
+                    : AssetImage("assets/images/profile.jpg") as ImageProvider,
             radius: 20,
           ),
           SizedBox(width: 15),

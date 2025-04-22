@@ -16,6 +16,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
+  bool _obscurePassword = true; // <-- Added for password visibility
 
   Future<void> registerUser() async {
     if (!_formKey.currentState!.validate()) return;
@@ -23,8 +24,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
     final response = await http.post(
       Uri.parse("http://192.168.248.39:5000/api/users/register"),
-      // Uri.parse("http://127.0.0.1:5000/api/users/register"),
-
       headers: {"Content-Type": "application/json"},
       body: json.encode({
         "name": nameController.text,
@@ -123,21 +122,34 @@ class _SignupScreenState extends State<SignupScreen> {
   }) {
     return TextFormField(
       controller: controller,
-      obscureText: isPassword,
+      obscureText: isPassword ? _obscurePassword : false,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon, color: Colors.blue),
+        suffixIcon:
+            isPassword
+                ? IconButton(
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                )
+                : null,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return "Enter your $label";
-       if (isEmail &&
+        if (isEmail &&
             !RegExp(
               r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$",
             ).hasMatch(value)) {
           return "Enter a valid email";
         }
-
         if (isPassword && value.length < 6) {
           return "Password must be at least 6 characters";
         }
