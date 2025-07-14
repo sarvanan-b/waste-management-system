@@ -95,3 +95,13 @@ A smart and efficient Waste Management System that streamlines citizen waste rep
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+![Image](https://github.com/user-attachments/assets/459e4ede-b32f-498f-b0bb-f177cb4807d5)
+![Image](https://github.com/user-attachments/assets/f750c0fa-5141-4512-b1ed-7313dec90dad)
+![Image](https://github.com/user-attachments/assets/1b6fca88-bfc6-4418-b275-eba7edf1e1c3)
+![Image](https://github.com/user-attachments/assets/8dea48f0-a14c-4a49-95e0-b5f77ccdabaf)
+![Image](https://github.com/user-attachments/assets/d5467a7d-f75c-4d63-a85b-7a582b3823f7)
+![Image](https://github.com/user-attachments/assets/a1bb77d4-a05b-49b0-aa34-c4a6f1e3c665)
+![Image](https://github.com/user-attachments/assets/c7fd5029-fa13-456c-9e11-acba91199df9)
+![Image](https://github.com/user-attachments/assets/2e10f8d0-aad6-40eb-8b6d-d2b49c6bd08c)
