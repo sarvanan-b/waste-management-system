@@ -88,13 +88,9 @@ A smart and efficient Waste Management System that streamlines citizen waste rep
 ## 👨‍💻 Contributors
 
 - **Saravanan** - Full Stack Developer  
-*(Add more contributors if needed)*
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
 ![Image](https://github.com/user-attachments/assets/459e4ede-b32f-498f-b0bb-f177cb4807d5)
